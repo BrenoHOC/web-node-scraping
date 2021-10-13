@@ -13,14 +13,15 @@ async function mergingDocuments(files) {
     var doc = await PDFDocument.create();
     
     for(const file of files) {
-        const content = await PDFDocument.load(fs.readFileSync('./downloads/documents/' + file));
+       
+        var content = await PDFDocument.load(fs.readFileSync('./downloads/documents/' + file));
+        var [contentPages] = await doc.copyPages(content, [0]);
+        doc.addPage(contentPages);        
         
-        const [contentPages] = await doc.copyPages(content, [0]);
-        
-        doc.addPage(contentPages);
     }
-    
     fs.writeFileSync('./downloads/documents/final.pdf', await doc.save());
+
+    return './downloads/documents/final.pdf';
 }
 
 module.exports.downloadDocuments = downloadDocuments;
